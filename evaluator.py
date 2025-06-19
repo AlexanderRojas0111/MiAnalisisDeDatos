@@ -1,41 +1,39 @@
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-import numpy as np # Para np.sqrt
+import numpy as np
 
-def evaluate_model(y_test, y_pred, model_name):
+def evaluate_model(y_true, y_pred, model_name):
     """
     Evalúa el rendimiento del modelo de regresión e imprime las métricas.
 
     Args:
-        y_test (pandas.Series): Los valores reales de la variable objetivo del conjunto de prueba.
+        y_true (pandas.Series): Los valores reales de la variable objetivo del conjunto de prueba.
         y_pred (np.ndarray): Las predicciones del modelo.
         model_name (str): El nombre del modelo que se está evaluando.
     """
     print(f"\n--- 5. Evaluación del Modelo '{model_name}' ---")
 
-    mae = mean_absolute_error(y_test, y_pred)
-    mse = mean_squared_error(y_test, y_pred)
+    mae = mean_absolute_error(y_true, y_pred)
+    mse = mean_squared_error(y_true, y_pred)
     rmse = np.sqrt(mse)
-    r2 = r2_score(y_test, y_pred)
+    r2 = r2_score(y_true, y_pred)
 
     print(f"Error Absoluto Medio (MAE): {mae:.3f} (Promedio de error absoluto en $x100,000)")
     print(f"Error Cuadrático Medio (MSE): {mse:.3f}")
     print(f"Raíz del Error Cuadrático Medio (RMSE): {rmse:.3f} (Error promedio en la misma unidad que el target)")
     print(f"Coeficiente de Determinación (R-squared): {r2:.3f} (Proporción de varianza explicada, 0-1)")
 
-    # Interpretación general del R-squared
-    if r2 >= 0.8:
-        print("El R-squared sugiere un rendimiento muy bueno: el modelo explica una gran parte de la variabilidad en los valores de vivienda.")
-    elif r2 >= 0.6:
-        print("El R-squared sugiere un buen rendimiento: el modelo explica una parte sustancial de la variabilidad.")
-    elif r2 >= 0.4:
-        print("El R-squared indica un rendimiento moderado: el modelo explica una parte limitada pero notable de la variabilidad.")
-    else:
-        print("El R-squared sugiere un rendimiento bajo: el modelo explica una pequeña parte de la variabilidad en los valores de vivienda.")
-
-    # Mostrar algunas de las primeras predicciones vs. valores reales
+    # Comparación de algunas predicciones vs valores reales
     print("\nComparación de las primeras 10 Predicciones vs. Valores Reales:")
-    for i in range(10):
-        print(f"Predicción: {y_pred[i]:.2f}, Real: {y_test.iloc[i]:.2f}")
+    for pred, real in zip(y_pred[:10], y_true[:10]):
+        print(f"Predicción: {pred:.2f}, Real: {real:.2f}")
+
+    # Retornar las métricas para el comparativo
+    return {
+        "MAE": round(mae, 3),
+        "MSE": round(mse, 3),
+        "RMSE": round(rmse, 3),
+        "R2": round(r2, 3)
+    }
 
 
 if __name__ == "__main__":
