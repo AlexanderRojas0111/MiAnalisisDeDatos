@@ -43,7 +43,7 @@ def get_neural_network_model(input_dim):
     model.summary() # Muestra un resumen de las capas del modelo
     return model
 
-def train_nn_model(model, X_train_scaled, y_train, epochs=100, batch_size=32, validation_split=0.2):
+def train_nn_model(model, X_train_scaled, y_train, epochs=50, batch_size=32, validation_split=0.2):
     """
     Entrena el modelo de red neuronal.
 
@@ -56,10 +56,13 @@ def train_nn_model(model, X_train_scaled, y_train, epochs=100, batch_size=32, va
         validation_split (float): Proporción de los datos de entrenamiento a usar como validación.
 
     Returns:
-        tf.keras.callbacks.History: Objeto History con el historial de entrenamiento.
+        tf.keras.Model: El modelo de red neuronal entrenado.
     """
     print(f"\n--- Entrenando la Red Neuronal por {epochs} épocas ---")
-    history = model.fit(
+    # Asegura que y_train sea un array de NumPy
+    if hasattr(y_train, "values"):
+        y_train = y_train.values
+    model.fit(
         X_train_scaled, y_train,
         epochs=epochs,
         batch_size=batch_size,
@@ -67,7 +70,7 @@ def train_nn_model(model, X_train_scaled, y_train, epochs=100, batch_size=32, va
         verbose=1 # Muestra el progreso del entrenamiento
     )
     print("Entrenamiento de la Red Neuronal completado.")
-    return history
+    return model
 
 def evaluate_nn_model(model, X_test_scaled, y_test):
     """
@@ -105,9 +108,7 @@ def predict_nn_model(model, X_test_scaled):
     return predictions.flatten()
 
 if __name__ == "__main__":
-    # --- Ejemplo de uso del módulo neural_network_model.py ---
-    # Para ejecutar este bloque, necesitas tener TensorFlow instalado.
-    # pip install tensorflow
+   
 
     # Este bloque simula los pasos de carga y preprocesamiento de main.py
     print("--- Ejemplo de Uso del Módulo 'neural_network_model.py' ---")

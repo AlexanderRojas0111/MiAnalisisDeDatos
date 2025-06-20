@@ -18,9 +18,10 @@ def perform_eda(df):
 
     # 2.2 Visualizar la distribución de variables (Histogramas)
     print("\nGenerando histogramas de distribución para todas las variables...")
-    df.hist(bins=50, figsize=(20, 15))
-    plt.suptitle('Histogramas de Distribución de Todas las Variables', y=1.02)
-    plt.tight_layout(rect=[0, 0.03, 1, 0.98])
+    df.hist(figsize=(12, 8))
+    plt.suptitle("Histogramas de variables")
+    plt.tight_layout()
+    plt.savefig("eda_histogramas.png")
     plt.show()
 
     plt.figure(figsize=(10, 6))
@@ -38,6 +39,13 @@ def perform_eda(df):
     plt.figure(figsize=(12, 10))
     sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt=".2f", linewidths=.5)
     plt.title('Matriz de Correlación de Variables')
+    plt.show()
+
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+    plt.title("Mapa de calor de correlación")
+    plt.tight_layout()
+    plt.savefig("eda_correlacion.png")
     plt.show()
 
     print("\nCorrelación de cada variable con MedHouseVal (variable objetivo):")
