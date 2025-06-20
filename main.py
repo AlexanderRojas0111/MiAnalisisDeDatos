@@ -3,6 +3,7 @@ from eda import perform_eda
 from preprocessor import prepare_data
 from models import get_model, train_model, make_predictions
 from evaluator import evaluate_model
+from neural_network_model import get_neural_network_model, train_nn_model, predict_nn_model
 import pandas as pd
 
 def run_analysis():
@@ -20,7 +21,12 @@ def run_analysis():
 
     X_train_scaled, X_test_scaled, y_train, y_test = prepare_data(df)
 
-    modelos_disponibles = ["Linear Regression", "Decision Tree", "Random Forest"]
+    modelos_disponibles = [
+        "Linear Regression",
+        "Decision Tree",
+        "Random Forest",
+        "Neural Network"
+    ]
     resultados = []
 
     for model_name in modelos_disponibles:
@@ -28,16 +34,17 @@ def run_analysis():
         print(f"Procesando el modelo: {model_name}")
         print(f"{'='*50}")
 
-        # Obtener la instancia del modelo
-        model = get_model(model_name)
+        if model_name == "Neural Network":
+            # Obtener y entrenar el modelo de red neuronal
+            model = get_neural_network_model(X_train_scaled.shape[1])
+            trained_model = train_nn_model(model, X_train_scaled, y_train, X_test_scaled, y_test)
+            y_pred = predict_nn_model(trained_model, X_test_scaled)
+        else:
+            # Modelos clásicos
+            model = get_model(model_name)
+            trained_model = train_model(model, model_name, X_train_scaled, y_train)
+            y_pred = make_predictions(trained_model, model_name, X_test_scaled)
 
-        # Entrenar el modelo
-        trained_model = train_model(model, model_name, X_train_scaled, y_train)
-
-        # Realizar predicciones
-        y_pred = make_predictions(trained_model, model_name, X_test_scaled)
-
-        # Evaluar el modelo
         metrics = evaluate_model(y_test, y_pred, model_name)
         resultados.append({"Modelo": model_name, **metrics})
 
